@@ -4,5 +4,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    print('hi')
-    print('hi')
+    #podeli arhitekturu u vise ipynb fajlova
