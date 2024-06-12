@@ -22,7 +22,7 @@ class LFWDataset(Dataset):
         return image, label
 
 
-def prepare_date():
+def prepare_data():
     lfw_people = fetch_lfw_people(min_faces_per_person=70, resize=0.4)
     X = lfw_people.images[:, :, :, np.newaxis] / 255.0
     y = lfw_people.target
