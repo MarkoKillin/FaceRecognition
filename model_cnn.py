@@ -21,5 +21,5 @@ class FaceRecognitionCNN(nn.Module):
         return x
 
 
-def get_model(num_classes):
+def get_cnn_model(num_classes):
     model = FaceRecognitionCNN(num_of_classes)
