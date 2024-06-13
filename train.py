@@ -41,7 +41,7 @@ if __name__ == '__main__':
     print('----Data Loaded----')
 
     train_device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print('cuda' if torch.cuda.is_available() else 'cpu')
+    print('Training on: ' + 'cuda' if torch.cuda.is_available() else 'cpu')
 
     num_classes = len(classes)
 
