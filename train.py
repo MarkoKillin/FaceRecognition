@@ -1,11 +1,11 @@
-from torch.optim import optim
-from torch.nn import nn
+import torch.optim as optim
+import torch.nn as nn
 from torch.utils.data import DataLoader
-from data_preprocessing import prepare_data, LFWDataset
-import os
+from data_preprocesing import prepare_data, LFWDataset
 
 
-def train_model(model, train_loader, epochs, save_path='models/model.pth'):
+def train_model(model, train_loader, epochs=10, save_path='models/model.pth'):
+    print('----Starting training----')
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
@@ -30,24 +30,24 @@ def train_model(model, train_loader, epochs, save_path='models/model.pth'):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Train a model')
-    parser.add_argument('--model', type=str, required=True, choices=['cnn', 'resnet', 'efficientnet'])
+    parser.add_argument('--model', type=str, default='cnn', choices=['cnn', 'resnet', 'efficientnet'])
     parser.add_argument('--epochs', type=int, default=10, help='number of epochs')
     args = parser.parse_args()
 
-    dataset, target_names = prepare_data()
-    train_loader = DataLoader(dataset, batch_size=64, shuffle=True)
+    dataset, classes = prepare_data()
+    train_loader_1 = DataLoader(dataset, batch_size=64, shuffle=True)
+    print('----Data Loaded----')
 
-    num_classes = len(target_names)
+    num_classes = len(classes)
 
     if args.model == 'resnet':
         from model_resnet import get_resnet_model
-        model = get_resnet_model(num_classes)
+        sel_model = get_resnet_model(num_classes)
     elif args.model == 'efficientnet':
         from model_efficientnet import get_efficientnet_model
-        model = get_efficientnet_model(num_classes)
+        sel_model = get_efficientnet_model(num_classes)
     else:
         from model_cnn import get_cnn_model
-        model = get_cnn_model(num_classes)
+        sel_model = get_cnn_model(num_classes)
 
-    os.makedirs('models', exist_ok=True)
-    train_model(model, train_loader, epochs=args.epochs, save_path=f'models/model_{args.model}.pth')
+    train_model(sel_model, train_loader_1, epochs=args.epochs, save_path=f'models/model_{args.model}.pth')

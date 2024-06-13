@@ -1,43 +1,34 @@
-from torch import save
-from sklearn.datasets import fetch_lfw_people
-from torchvision import transforms
-from torch.utils.data import DataLoader, DataSet
-import numpy as np
+from torchvision import transforms, datasets
+from torch.utils.data import Dataset
 
 
 class LFWDataset(Dataset):
-    def __init__(self, images, labels, transform=None):
-        self.images = images
-        self.labels = labels
+    def __init__(self, root_dir, transform=None):
+        self.root_dir = root_dir
         self.transform = transform
+        self.dataset = datasets.ImageFolder(root=root_dir, transform=self.transform)
+        self.classes = self.dataset.classes
 
     def __len__(self):
-        return len(self.images)
+        return len(self.dataset)
 
     def __getitem__(self, idx):
-        image = self.images[idx]
-        label = self.labels[idx]
-        if self.transform:
-            image = self.transform(image)
-        return image, label
+        img, label = self.dataset[idx]
+        return img, label
 
 
-def prepare_data():
-    lfw_people = fetch_lfw_people(min_faces_per_person=70, resize=0.4)
-    X = lfw_people.images[:, :, :, np.newaxis] / 255.0
-    y = lfw_people.target
-
+def prepare_data(data_dir='dataset/lfw_funneled'):
     transform = transforms.Compose([
-        transforms.toPILImage(),
+        transforms.Grayscale(num_output_channels=1),
         transforms.Resize((128, 128)),
         transforms.ToTensor(),
         transforms.Normalize((0.5,), (0.5,))
     ])
 
-    dataset = LFWDataset(X, y, transform=transform)
-    return dataset, lfw_people.target_names
+    lfw_dataset = LFWDataset(root_dir=data_dir, transform=transform)
+    return lfw_dataset, lfw_dataset.classes
 
 
 if __name__ == '__main__':
-    dataset, target_names = prepare_date()
-    print('----data loaded----')
+    dataset, classes = prepare_data()
+    print(f"Found {len(dataset)} images in {len(classes)} classes.")
