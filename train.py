@@ -1,10 +1,11 @@
+import torch
 import torch.optim as optim
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from data_preprocesing import prepare_data, LFWDataset
 
 
-def train_model(model, train_loader, epochs=10, save_path='models/model.pth'):
+def train_model(model, train_loader, device, epochs=10, save_path='models/model.pth'):
     print('----Starting training----')
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
@@ -13,6 +14,7 @@ def train_model(model, train_loader, epochs=10, save_path='models/model.pth'):
         running_loss = 0.0
         model.train()
         for images, labels in train_loader:
+            images, labels = images.to(device), labels.to(device)
             optimizer.zero_grad()
             outputs = model(images)
             loss = criterion(outputs, labels)
@@ -38,6 +40,9 @@ if __name__ == '__main__':
     train_loader_1 = DataLoader(dataset, batch_size=64, shuffle=True)
     print('----Data Loaded----')
 
+    train_device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print('cuda' if torch.cuda.is_available() else 'cpu')
+
     num_classes = len(classes)
 
     if args.model == 'resnet':
@@ -50,4 +55,5 @@ if __name__ == '__main__':
         from model_cnn import get_cnn_model
         sel_model = get_cnn_model(num_classes)
 
-    train_model(sel_model, train_loader_1, epochs=args.epochs, save_path=f'models/model_{args.model}.pth')
+    sel_model.to(train_device)
+    train_model(sel_model, train_loader_1, train_device, epochs=args.epochs, save_path=f'models/model_{args.model}.pth')
