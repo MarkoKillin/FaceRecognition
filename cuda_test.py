@@ -1,6 +1,9 @@
 import torch
 
 
+# This project is capable of training on cuda cores,
+# if they are available it will use them,
+# if they are not it will train on cpu.
 def check_cuda():
     if torch.cuda.is_available():
         print("CUDA is available!")
