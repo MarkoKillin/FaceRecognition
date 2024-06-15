@@ -18,7 +18,7 @@ class LFWDataset(Dataset):
         return img, label
 
 
-def prepare_data(data_dir='dataset/lfw_funneled'):
+def prepare_nn_data(data_dir='dataset/lfw_funneled'):
     transform = transforms.Compose([
         transforms.Grayscale(num_output_channels=1),
         transforms.Resize((128, 128)),
