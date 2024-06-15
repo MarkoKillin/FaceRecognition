@@ -4,6 +4,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from torch.utils.tensorboard import SummaryWriter
+from sklearn.metrics import accuracy_score
 
 
 def train_model(model, X_train, y_train, X_test, y_test, save_path='models/model_ml.pth'):
@@ -14,7 +15,11 @@ def train_model(model, X_train, y_train, X_test, y_test, save_path='models/model
     print('Model Trained Successfully!')
 
     #validation
+    y_pred = model.predict(X_test)
+    val_accuracy = accuracy_score(y_test, y_pred)
+    writer.add_scalar('Accuracy', val_accuracy, 0)
 
+    writer.close()
 
 
 if __name__ == '__main__':
