@@ -2,7 +2,7 @@ import torch
 import torch.optim as optim
 import torch.nn as nn
 from torch.utils.data import DataLoader, Subset
-from data_preprocesing import prepare_data, LFWDataset
+from data_preprocesing import prepare_nn_data, LFWDataset
 from torch.utils.tensorboard import SummaryWriter
 from sklearn.model_selection import train_test_split
 import joblib

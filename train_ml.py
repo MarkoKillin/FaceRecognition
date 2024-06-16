@@ -1,4 +1,4 @@
-from data_preprocessing import prepare_ml_data
+from data_preprocesing import prepare_ml_data
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
