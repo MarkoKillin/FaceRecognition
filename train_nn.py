@@ -5,7 +5,6 @@ from torch.utils.data import DataLoader, Subset
 from data_preprocesing import prepare_nn_data, LFWDataset
 from torch.utils.tensorboard import SummaryWriter
 from sklearn.model_selection import train_test_split
-import joblib
 
 
 def train_model(model, train_loader, val_loader, device, epochs=10, save_path='models/model.pth'):
@@ -71,8 +70,6 @@ if __name__ == '__main__':
 
     train_loader_1 = DataLoader(train_dataset, batch_size=64, shuffle=True)
     val_loader_1 = DataLoader(val_dataset, batch_size=64, shuffle=True)
-    joblib.dump(train_idx, 'data/train_idx.pkl')
-    joblib.dump(val_idx, 'data/val_idx.pkl')
     print('----Data Loaded----')
 
     train_device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

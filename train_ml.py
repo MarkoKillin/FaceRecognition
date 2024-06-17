@@ -30,7 +30,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     X, y, classes = prepare_ml_data()
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    print('----Data Loaded----')
 
     if args.model == 'dt':
         model = DecisionTreeClassifier()

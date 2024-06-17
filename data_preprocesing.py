@@ -1,6 +1,7 @@
 from torchvision import transforms, datasets
 from torch.utils.data import Dataset
 import numpy as np
+from collections import Counter
 
 
 class LFWDataset(Dataset):
@@ -27,6 +28,7 @@ def prepare_nn_data(data_dir='dataset/lfw_funneled'):
     ])
 
     lfw_dataset = LFWDataset(root_dir=data_dir, transform=transform)
+
     return lfw_dataset, lfw_dataset.classes
 
 
@@ -37,9 +39,21 @@ def prepare_ml_data(data_dir='dataset/lfw_funneled'):
         transforms.ToTensor(),
     ])
     lfw_dataset = datasets.ImageFolder(root=data_dir, transform=transform)
+
     data = [(img.numpy().flatten(), label) for img, label in lfw_dataset]
     X, y = zip(*data)
     return np.array(X), np.array(y), lfw_dataset.classes
+
+
+# If needed for stratification
+def filter_dataset(dataset, min_instances=2):
+    classes = dataset.classes
+    num_classes = Counter(classes)
+    filtered_indicies = [i for i, label in enumerate(classes) if num_classes[label] >= min_instances]
+    filtered_samples = [dataset.samples[i] for i in filtered_indicies]
+    dataset.samples = filtered_samples
+    dataset.targets = [sample[1] for sample in filtered_samples]
+    return dataset
 
 
 if __name__ == '__main__':
