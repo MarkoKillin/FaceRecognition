@@ -58,13 +58,13 @@ def train_model(model, train_loader, val_loader, device, epochs=10, save_path='m
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Train neural network model')
-    parser.add_argument('--model', type=str, default='cnn', choices=['cnn', 'resnet', 'efficientnet'])
+    parser.add_argument('--model', type=str, default='resnet', choices=['cnn', 'resnet', 'efficientnet'])
     parser.add_argument('--epochs', type=int, default=10, help='number of epochs')
     args = parser.parse_args()
 
     dataset, classes = prepare_nn_data()
 
-    train_idx, val_idx = train_test_split(list(range(len(dataset))), test_size=0.2, stratify=dataset.dataset.targets, random_state=42)
+    train_idx, val_idx = train_test_split(list(range(len(dataset))), test_size=0.2, random_state=42)
     train_dataset = Subset(dataset, train_idx)
     val_dataset = Subset(dataset, val_idx)
 
