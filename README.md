@@ -1,6 +1,4 @@
-FaceRecognition with Deep Convolutional Neural Networks project using PyTorch library.
+FaceRecognition with Deep Convolutional Neural Networks project using PyTorch and Scikit-learn libraries.
 Dataset : https://www.kaggle.com/datasets/atulanandjha/lfwpeople
 
-Comparing the results from different architectures.
-My own CNN, ResNet18, EfficientNet.
-
+Comparing the results from different architectures. My own CNN, ResNet18, EfficientNet. Also comparing results with some ML models.
