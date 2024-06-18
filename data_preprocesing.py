@@ -36,6 +36,8 @@ def prepare_ml_data(data_dir='dataset/lfw_funneled'):
     transform = transforms.Compose([
         transforms.Grayscale(num_output_channels=1),
         transforms.Resize((128, 128)),
+        transforms.RandomHorizontalFlip(),
+        transforms.RandomRotation(10),
         transforms.ToTensor(),
     ])
     lfw_dataset = datasets.ImageFolder(root=data_dir, transform=transform)

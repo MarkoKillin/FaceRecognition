@@ -7,11 +7,11 @@ from torch.utils.tensorboard import SummaryWriter
 from sklearn.model_selection import train_test_split
 
 
-def train_model(model, train_loader, val_loader, device, epochs=10, save_path='models/model.pth'):
+def train_model(model, train_loader, val_loader, device, epochs=10, save_path='models/model.pth', log_path='runs/'):
     print('----Starting training----')
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
-    writer = SummaryWriter()
+    writer = SummaryWriter(log_dir=log_path)
 
     for epoch in range(epochs):
         running_loss = 0.0
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Train neural network model')
     parser.add_argument('--model', type=str, default='resnet', choices=['cnn', 'resnet', 'efficientnet'])
-    parser.add_argument('--epochs', type=int, default=20, help='number of epochs')
+    parser.add_argument('--epochs', type=int, default=25, help='number of epochs')
     args = parser.parse_args()
 
     dataset, classes = prepare_nn_data()
@@ -68,8 +68,8 @@ if __name__ == '__main__':
     train_dataset = Subset(dataset, train_idx)
     val_dataset = Subset(dataset, val_idx)
 
-    train_loader_1 = DataLoader(train_dataset, batch_size=64, shuffle=True)
-    val_loader_1 = DataLoader(val_dataset, batch_size=64, shuffle=True)
+    train_loader_1 = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    val_loader_1 = DataLoader(val_dataset, batch_size=32, shuffle=True)
     print('----Data Loaded----')
 
     train_device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -88,5 +88,5 @@ if __name__ == '__main__':
         sel_model = get_cnn_model(num_classes)
 
     sel_model.to(train_device)
-    train_model(sel_model, train_loader_1, val_loader_1, train_device, epochs=args.epochs, save_path=f'models/model_{args.model}.pth')
+    train_model(sel_model, train_loader_1, val_loader_1, train_device, epochs=args.epochs, save_path=f'models/model_{args.model}.pth', log_path=f'runs/model_{args.model}')
 
