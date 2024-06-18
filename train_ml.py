@@ -5,6 +5,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from torch.utils.tensorboard import SummaryWriter
 from sklearn.metrics import accuracy_score
+import joblib
 
 
 def train_model(model, X_train, y_train, X_test, y_test, save_path='models/model_ml.pth', log_path='runs/'):
@@ -26,7 +27,7 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser(description='Train machine learning model')
-    parser.add_argument('--model', type=str, default='dt', choices=['dt', 'nb', 'rf', 'zr'])
+    parser.add_argument('--model', type=str, default='zr', choices=['dt', 'nb', 'rf', 'zr'])
     args = parser.parse_args()
 
     X, y, classes = prepare_ml_data()

@@ -2,7 +2,10 @@ import numpy as np
 
 
 class ZeroRuleClassifier:
-    def __init__(self, X, y):
+    def __init__(self):
+        self.most_frequent = None
+
+    def fit(self, X, y):
         self.most_frequent = np.bincount(y).argmax()
 
     def predict(self, X):
