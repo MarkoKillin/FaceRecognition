@@ -7,8 +7,8 @@ from torch.utils.tensorboard import SummaryWriter
 from sklearn.metrics import accuracy_score
 
 
-def train_model(model, X_train, y_train, X_test, y_test, save_path='models/model_ml.pth'):
-    writer = SummaryWriter()
+def train_model(model, X_train, y_train, X_test, y_test, save_path='models/model_ml.pth', log_path='runs/'):
+    writer = SummaryWriter(log_dir=log_path)
 
     model.fit(X_train, y_train)
     joblib.dump(model, save_path)
@@ -43,4 +43,4 @@ if __name__ == '__main__':
         from model_zero_rule import ZeroRuleClassifier
         model = ZeroRuleClassifier()
 
-    train_model(model, X_train, y_train, X_test, y_test, save_path=f'models/model_{args.model}.pkl')
+    train_model(model, X_train, y_train, X_test, y_test, save_path=f'models/model_{args.model}.pkl', log_path=f'runs/model_{args.model}')
