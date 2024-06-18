@@ -2,13 +2,14 @@ from torchvision import transforms, datasets
 from torch.utils.data import Dataset
 import numpy as np
 from collections import Counter
+from sklearn.datasets import fetch_lfw_people
 
 
 class LFWDataset(Dataset):
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
         self.transform = transform
-        self.dataset = datasets.ImageFolder(root=root_dir, transform=self.transform)
+        self.dataset = fetch_lfw_people(data_home=root_dir, min_faces_per_person=100, download_if_missing=False)
         self.classes = self.dataset.classes
 
     def __len__(self):
@@ -16,6 +17,8 @@ class LFWDataset(Dataset):
 
     def __getitem__(self, idx):
         img, label = self.dataset[idx]
+        if self.transform:
+            img = self.transform(img)
         return img, label
 
 
@@ -23,6 +26,8 @@ def prepare_nn_data(data_dir='dataset/lfw_funneled'):
     transform = transforms.Compose([
         transforms.Grayscale(num_output_channels=1),
         transforms.Resize((128, 128)),
+        transforms.RandomHorizontalFlip(),
+        transforms.RandomRotation(10),
         transforms.ToTensor(),
         transforms.Normalize((0.5,), (0.5,))
     ])
@@ -36,8 +41,6 @@ def prepare_ml_data(data_dir='dataset/lfw_funneled'):
     transform = transforms.Compose([
         transforms.Grayscale(num_output_channels=1),
         transforms.Resize((128, 128)),
-        transforms.RandomHorizontalFlip(),
-        transforms.RandomRotation(10),
         transforms.ToTensor(),
     ])
     lfw_dataset = datasets.ImageFolder(root=data_dir, transform=transform)
