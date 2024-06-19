@@ -3,6 +3,7 @@ from torch.utils.data import Dataset
 import numpy as np
 from collections import Counter
 from sklearn.datasets import fetch_lfw_people
+from PIL import Image
 
 
 class LFWDataset(Dataset):
@@ -10,13 +11,15 @@ class LFWDataset(Dataset):
         self.root_dir = root_dir
         self.transform = transform
         self.dataset = fetch_lfw_people(data_home=root_dir, min_faces_per_person=100, download_if_missing=False)
-        self.classes = self.dataset.classes
+        self.classes = self.dataset.target_names
 
     def __len__(self):
-        return len(self.dataset)
+        return len(self.dataset.images)
 
     def __getitem__(self, idx):
-        img, label = self.dataset[idx]
+        img = self.dataset.images[idx]
+        label = self.dataset.target[idx]
+        img = Image.fromarray(img)
         if self.transform:
             img = self.transform(img)
         return img, label
@@ -62,5 +65,5 @@ def filter_dataset(dataset, min_instances=2):
 if __name__ == '__main__':
     dataset, classes = prepare_nn_data()
     print(f'Found {len(dataset)} images in {len(classes)} classes.')
-    X, y, classes = prepare_ml_data()
+    X, y, _, _ = prepare_ml_data()
     print(f'Prepared data for mlL {X.shape}, {y.shape}')
