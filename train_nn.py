@@ -59,7 +59,7 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Train neural network model')
     parser.add_argument('--model', type=str, default='cnn', choices=['cnn', 'resnet', 'efficientnet'])
-    parser.add_argument('--epochs', type=int, default=25, help='number of epochs')
+    parser.add_argument('--epochs', type=int, default=50, help='number of epochs')
     args = parser.parse_args()
 
     dataset, classes = prepare_nn_data()
