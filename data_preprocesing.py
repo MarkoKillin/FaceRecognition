@@ -43,11 +43,9 @@ def prepare_ml_data(data_dir='dataset/lfw_funneled'):
         transforms.Resize((128, 128)),
         transforms.ToTensor(),
     ])
-    lfw_dataset = datasets.ImageFolder(root=data_dir, transform=transform)
-
-    data = [(img.numpy().flatten(), label) for img, label in lfw_dataset]
-    X, y = zip(*data)
-    return np.array(X), np.array(y), lfw_dataset.classes
+    lfw_dataset = fetch_lfw_people(data_home=data_dir, min_faces_per_person=100, download_if_missing=True)
+    _, h, w = lfw_dataset.images.shape
+    return lfw_dataset.data, lfw_dataset.target, h, w
 
 
 # If needed for stratification
@@ -62,7 +60,7 @@ def filter_dataset(dataset, min_instances=2):
 
 
 if __name__ == '__main__':
-    dataset, classes = prepare_data()
+    dataset, classes = prepare_nn_data()
     print(f'Found {len(dataset)} images in {len(classes)} classes.')
     X, y, classes = prepare_ml_data()
     print(f'Prepared data for mlL {X.shape}, {y.shape}')
