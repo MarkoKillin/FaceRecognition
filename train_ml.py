@@ -29,7 +29,7 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser(description='Train machine learning model')
-    parser.add_argument('--model', type=str, default='svm', choices=['svm', 'nb', 'rf', 'zr'])
+    parser.add_argument('--model', type=str, default='zr', choices=['svm', 'nb', 'rf', 'zr'])
     args = parser.parse_args()
 
     X, y, h, w = prepare_ml_data()
@@ -45,7 +45,6 @@ if __name__ == '__main__':
         param_grid_svm = {'C': [1e3, 5e3, 1e4, 5e4, 1e5], 'gamma': [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.1], }
         model = GridSearchCV(SVC(kernel='rbf', class_weight='balanced'), param_grid=param_grid_svm)
     elif args.model == 'nb':
-        param_grid_nb = {'var_smoothing': np.logspace(0, -9, num=100)}
         model = GaussianNB()
     elif args.model == 'rf':
         model = RandomForestClassifier()
