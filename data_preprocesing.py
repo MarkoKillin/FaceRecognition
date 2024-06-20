@@ -25,17 +25,12 @@ class LFWDataset(Dataset):
         return img, label
 
 
-class ORLFacesDataset(Dataset):
-    def __init__(self, root_dir, transform=None):
-        self.root_dir = root_dir
-
-
 def prepare_nn_data(data_dir='dataset/lfw_funneled'):
     transform = transforms.Compose([
         transforms.Grayscale(num_output_channels=1),
         transforms.Resize((128, 128)),
-        # transforms.RandomHorizontalFlip(),
-        # transforms.RandomRotation(10),
+        transforms.RandomHorizontalFlip(),
+        transforms.RandomRotation(10),
         transforms.ToTensor(),
         transforms.Normalize((0.5,), (0.5,))
     ])
@@ -51,7 +46,7 @@ def prepare_ml_data(data_dir='dataset/lfw_funneled'):
         transforms.Resize((128, 128)),
         transforms.ToTensor(),
     ])
-    lfw_dataset = fetch_lfw_people(data_home=data_dir, min_faces_per_person=100, download_if_missing=True)
+    lfw_dataset = fetch_lfw_people(data_home=data_dir, min_faces_per_person=40, download_if_missing=True)
     _, h, w = lfw_dataset.images.shape
     return lfw_dataset.data, lfw_dataset.target, h, w
 

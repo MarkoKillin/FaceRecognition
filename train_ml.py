@@ -29,7 +29,7 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser(description='Train machine learning model')
-    parser.add_argument('--model', type=str, default='zr', choices=['svm', 'nb', 'rf', 'zr'])
+    parser.add_argument('--model', type=str, default='svm', choices=['svm', 'nb', 'rf', 'zr'])
     args = parser.parse_args()
 
     X, y, h, w = prepare_ml_data()

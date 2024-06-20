@@ -10,7 +10,8 @@ from sklearn.model_selection import train_test_split
 def train_model(model, train_loader, val_loader, device, epochs=10, save_path='models/model.pth', log_path='runs/'):
     print('----Starting training----')
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
     writer = SummaryWriter(log_dir=log_path)
 
     for epoch in range(epochs):
@@ -24,6 +25,8 @@ def train_model(model, train_loader, val_loader, device, epochs=10, save_path='m
             loss.backward()
             optimizer.step()
             running_loss += loss.item() * images.size(0)
+
+        scheduler.step()
 
         epoch_loss = running_loss / len(train_loader.dataset)
         print(f'Epoch {epoch + 1}: Loss: {epoch_loss:.4f}')
@@ -58,7 +61,7 @@ def train_model(model, train_loader, val_loader, device, epochs=10, save_path='m
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Train neural network model')
-    parser.add_argument('--model', type=str, default='cnn', choices=['cnn', 'resnet', 'efficientnet'])
+    parser.add_argument('--model', type=str, default='resnet', choices=['cnn', 'resnet', 'efficientnet'])
     parser.add_argument('--epochs', type=int, default=50, help='number of epochs')
     args = parser.parse_args()
 
