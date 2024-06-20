@@ -10,7 +10,7 @@ class LFWDataset(Dataset):
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
         self.transform = transform
-        self.dataset = fetch_lfw_people(data_home=root_dir, min_faces_per_person=5, download_if_missing=False)
+        self.dataset = fetch_lfw_people(data_home=root_dir, min_faces_per_person=40, download_if_missing=False)
         self.classes = self.dataset.target_names
 
     def __len__(self):
@@ -30,13 +30,12 @@ class ORLFacesDataset(Dataset):
         self.root_dir = root_dir
 
 
-
 def prepare_nn_data(data_dir='dataset/lfw_funneled'):
     transform = transforms.Compose([
         transforms.Grayscale(num_output_channels=1),
-        transforms.Resize((96, 96)),
-        #transforms.RandomHorizontalFlip(),
-        #transforms.RandomRotation(10),
+        transforms.Resize((128, 128)),
+        # transforms.RandomHorizontalFlip(),
+        # transforms.RandomRotation(10),
         transforms.ToTensor(),
         transforms.Normalize((0.5,), (0.5,))
     ])
