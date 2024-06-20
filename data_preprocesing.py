@@ -10,7 +10,7 @@ class LFWDataset(Dataset):
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
         self.transform = transform
-        self.dataset = fetch_lfw_people(data_home=root_dir, min_faces_per_person=200, download_if_missing=False)
+        self.dataset = fetch_lfw_people(data_home=root_dir, min_faces_per_person=5, download_if_missing=False)
         self.classes = self.dataset.target_names
 
     def __len__(self):
@@ -23,6 +23,12 @@ class LFWDataset(Dataset):
         if self.transform:
             img = self.transform(img)
         return img, label
+
+
+class ORLFacesDataset(Dataset):
+    def __init__(self, root_dir, transform=None):
+        self.root_dir = root_dir
+
 
 
 def prepare_nn_data(data_dir='dataset/lfw_funneled'):

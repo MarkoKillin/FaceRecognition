@@ -76,6 +76,7 @@ if __name__ == '__main__':
     print('Training on: ' + 'cuda' if torch.cuda.is_available() else 'cpu')
 
     num_classes = len(classes)
+    print(num_classes)
 
     if args.model == 'resnet':
         from model_resnet import get_resnet_model
