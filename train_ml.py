@@ -1,4 +1,4 @@
-from data_preprocesing import prepare_ml_data
+from data_preprocesing import prepare_ml_data_lfw, prepare_ml_data_cwf
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.svm import SVC
 from sklearn.naive_bayes import GaussianNB
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     parser.add_argument('--model', type=str, default='svm', choices=['svm', 'nb', 'rf', 'zr'])
     args = parser.parse_args()
 
-    X, y, h, w = prepare_ml_data()
+    X, y, h, w = prepare_ml_data_cwf()
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     n_components = 150
     pca = PCA(n_components=n_components, svd_solver='randomized', whiten=True).fit(X_train)

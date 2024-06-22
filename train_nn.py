@@ -2,7 +2,7 @@ import torch
 import torch.optim as optim
 import torch.nn as nn
 from torch.utils.data import DataLoader, Subset
-from data_preprocesing import prepare_nn_data, LFWDataset
+from data_preprocesing import prepare_nn_data_lfw, prepare_nn_data_cwf
 from torch.utils.tensorboard import SummaryWriter
 from sklearn.model_selection import train_test_split
 
@@ -61,11 +61,11 @@ def train_model(model, train_loader, val_loader, device, epochs=10, save_path='m
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Train neural network model')
-    parser.add_argument('--model', type=str, default='resnet', choices=['cnn', 'resnet', 'efficientnet'])
+    parser.add_argument('--model', type=str, default='resnet', choices=['cnn', 'resnet'])
     parser.add_argument('--epochs', type=int, default=50, help='number of epochs')
     args = parser.parse_args()
 
-    dataset, classes = prepare_nn_data()
+    dataset, classes = prepare_nn_data_cwf()
 
     train_idx, val_idx = train_test_split(list(range(len(dataset))), test_size=0.2, random_state=42)
     train_dataset = Subset(dataset, train_idx)
