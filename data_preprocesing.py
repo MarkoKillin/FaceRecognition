@@ -19,9 +19,11 @@ class DatasetLoader(Dataset):
 
     def __getitem__(self, idx):
         img, label = self.dataset[idx]
-        img = Image.fromarray(img)
-        if self.transform:
-            img = self.transform(img)
+        # img = Image.fromarray(img)
+        # if not isinstance(img, Image.Image):
+        #     img = Image.fromarray(np.uint8(img))
+        # if self.transform:
+        #     img = self.transform(img)
         return img, label
 
 
@@ -93,5 +95,5 @@ def _filter_dataset(dataset, top_classes):
 if __name__ == '__main__':
     dataset, classes = prepare_nn_data_cwf()
     print(f'Found {len(dataset)} images in {len(classes)} classes.')
-    X, y, _, _ = prepare_ml_data_cwf()
-    print(f'Prepared data for mlL {X.shape}, {y.shape}')
+    # X, y, _, _ = prepare_ml_data_cwf()
+    # print(f'Prepared data for mlL {X.shape}, {y.shape}')
