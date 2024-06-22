@@ -4,28 +4,10 @@ import numpy as np
 from collections import Counter
 from sklearn.datasets import fetch_lfw_people
 from PIL import Image
+import os
 
 
-class LFWDataset(Dataset):
-    def __init__(self, root_dir, transform=None):
-        self.root_dir = root_dir
-        self.transform = transform
-        self.dataset = fetch_lfw_people(data_home=root_dir, min_faces_per_person=40, download_if_missing=False)
-        self.classes = self.dataset.target_names
-
-    def __len__(self):
-        return len(self.dataset.images)
-
-    def __getitem__(self, idx):
-        img = self.dataset.images[idx]
-        label = self.dataset.target[idx]
-        img = Image.fromarray(img)
-        if self.transform:
-            img = self.transform(img)
-        return img, label
-
-
-class CasiaWFDataset(Dataset):
+class DatasetLoader(Dataset):
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
         self.transform = transform
@@ -33,18 +15,33 @@ class CasiaWFDataset(Dataset):
         self.classes = self.dataset.classes
 
     def __len__(self):
-        return len(self.dataset.images)
+        return len(self.dataset)
 
     def __getitem__(self, idx):
-        img = self.dataset.images[idx]
-        label = self.dataset.target[idx]
+        img, label = self.dataset[idx]
         img = Image.fromarray(img)
         if self.transform:
             img = self.transform(img)
         return img, label
 
 
-def prepare_nn_data_lfw(data_dir='dataset/lfw_funneled'):
+def prepare_nn_data_lfw(top_classes=40):
+    return _prepare_nn_data(data_dir='dataset/lfw_funneled', top_classes=top_classes)
+
+
+def prepare_nn_data_cwf(top_classes=40):
+    return _prepare_nn_data(data_dir='dataset/casia-webface', top_classes=top_classes)
+
+
+def prepare_ml_data_lfw(top_classes=40):
+    return _prepare_ml_data(data_dir='dataset/lfw_funneled', top_classes=top_classes)
+
+
+def prepare_ml_data_cwf(top_classes=40):
+    return _prepare_ml_data(data_dir='dataset/casia-webface', top_classes=top_classes)
+
+
+def _prepare_nn_data(data_dir, top_classes):
     transform = transforms.Compose([
         transforms.Grayscale(num_output_channels=1),
         transforms.Resize((128, 128)),
@@ -54,50 +51,47 @@ def prepare_nn_data_lfw(data_dir='dataset/lfw_funneled'):
         transforms.Normalize((0.5,), (0.5,))
     ])
 
-    lfw_dataset = LFWDataset(root_dir=data_dir, transform=transform)
-
-    return lfw_dataset, lfw_dataset.classes
-
-
-def prepare_nn_data_cwf(data_dir='dataset/casia-webface'):
-    transform = transforms.Compose([
-        transforms.Grayscale(num_output_channels=1),
-        transforms.Resize((128, 128)),
-        transforms.RandomHorizontalFlip(),
-        transforms.RandomRotation(10),
-        transforms.ToTensor(),
-        transforms.Normalize((0.5,), (0.5,))
-    ])
-
-    lfw_dataset = LFWDataset(root_dir=data_dir, transform=transform)
-
-    return lfw_dataset, lfw_dataset.classes
+    loaded_dataset = DatasetLoader(root_dir=data_dir, transform=transform)
+    _filter_dataset(loaded_dataset, top_classes)
+    return loaded_dataset, loaded_dataset.classes
 
 
-def prepare_ml_data(data_dir='dataset/lfw_funneled'):
+def _prepare_ml_data(data_dir, top_classes):
     transform = transforms.Compose([
         transforms.Grayscale(num_output_channels=1),
         transforms.Resize((128, 128)),
         transforms.ToTensor(),
     ])
-    lfw_dataset = fetch_lfw_people(data_home=data_dir, min_faces_per_person=40, download_if_missing=True)
-    _, h, w = lfw_dataset.images.shape
-    return lfw_dataset.data, lfw_dataset.target, h, w
+
+    loaded_dataset = DatasetLoader(root_dir=data_dir, transform=transform)
+    _filter_dataset(loaded_dataset, top_classes)
+
+    data = []
+    targets = []
+    for img, label in loaded_dataset:
+        data.append(img.numpy().flatten())
+        targets.append(label)
+
+    data = np.array(data)
+    targets = np.array(targets)
+    _, h, w = loaded_dataset[0][0].shape
+
+    return data, targets, h, w
 
 
 # If needed for stratification
-def filter_dataset(dataset, min_instances=2):
-    classes = dataset.classes
-    num_classes = Counter(classes)
-    filtered_indicies = [i for i, label in enumerate(classes) if num_classes[label] >= min_instances]
-    filtered_samples = [dataset.samples[i] for i in filtered_indicies]
-    dataset.samples = filtered_samples
-    dataset.targets = [sample[1] for sample in filtered_samples]
-    return dataset
+def _filter_dataset(dataset, top_classes):
+    class_counter = Counter([label for _, label in dataset])
+    top_classes_counts = class_counter.most_common(top_classes)
+    top_classes_indices = [label for label, _ in top_classes_counts]
+    filtered_samples = [(img, label) for img, label in dataset if label in top_classes_indices]
+    dataset.dataset.samples = filtered_samples
+    dataset.dataset.targets = [label for _, label in filtered_samples]
+    dataset.classes = [dataset.classes[label] for label in top_classes_indices]
 
 
 if __name__ == '__main__':
-    dataset, classes = prepare_nn_data()
+    dataset, classes = prepare_nn_data_cwf()
     print(f'Found {len(dataset)} images in {len(classes)} classes.')
     X, y, _, _ = prepare_ml_data()
     print(f'Prepared data for mlL {X.shape}, {y.shape}')
