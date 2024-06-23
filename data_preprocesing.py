@@ -83,6 +83,9 @@ def _prepare_ml_data(data_dir, top_classes):
 
 # If needed for stratification
 def _filter_dataset(dataset, top_classes):
+    if top_classes == -1:
+        return
+
     class_counter = Counter([label for _, label in dataset])
     top_classes_counts = class_counter.most_common(top_classes)
     top_classes_indices = [label for label, _ in top_classes_counts]
