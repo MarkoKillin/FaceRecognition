@@ -29,7 +29,7 @@ def train_model(model, train_loader, val_loader, device, epochs=10, save_path='m
         scheduler.step()
 
         epoch_loss = running_loss / len(train_loader.dataset)
-        print(f'Epoch {epoch + 1}: Loss: {epoch_loss:.4f}')
+        print(f'Epoch {epoch + 1}/{epochs}: Loss: {epoch_loss:.4f}')
 
         writer.add_scalar('Loss/train', epoch_loss, epoch)
 
