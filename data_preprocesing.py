@@ -134,7 +134,7 @@ def _filter_dataset(dataset, top_classes, save_path):
 
 
 if __name__ == '__main__':
-    # dataset, classes = prepare_nn_data_cwf()
-    # print(f'Found {len(dataset)} images in {len(classes)} classes.')
-    X, y, _, _ = prepare_ml_data_cwf()
-    print(f'Prepared data for mlL {X.shape}, {y.shape}')
+    dataset, classes = prepare_nn_data_cwf()
+    print(f'Found {len(dataset)} images in {len(classes)} classes.')
+    # X, y, _, _ = prepare_ml_data_cwf()
+    # print(f'Prepared data for mlL {X.shape}, {y.shape}')

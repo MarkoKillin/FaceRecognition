@@ -29,4 +29,4 @@ def delete_small_folders(root_dir, min_file_count, min_folders_left):
 
 
 if __name__ == '__main__':
-    delete_small_folders(root_dir='dataset/casia-webface', min_file_count=105, min_folders_left=700)
+    delete_small_folders(root_dir='dataset/casia-webface', min_file_count=150, min_folders_left=500)

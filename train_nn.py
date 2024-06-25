@@ -61,8 +61,8 @@ def train_model(model, train_loader, val_loader, device, epochs=10, save_path='m
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Train neural network model')
-    parser.add_argument('--model', type=str, default='cnn', choices=['cnn', 'resnet'])
-    parser.add_argument('--epochs', type=int, default=50, help='number of epochs')
+    parser.add_argument('--model', type=str, default='resnet', choices=['cnn', 'resnet'])
+    parser.add_argument('--epochs', type=int, default=30, help='number of epochs')
     args = parser.parse_args()
 
     dataset, classes = prepare_nn_data_cwf()
@@ -79,7 +79,7 @@ if __name__ == '__main__':
     print('Training on: ' + 'cuda' if torch.cuda.is_available() else 'cpu')
 
     num_classes = len(classes)
-    print(num_classes)
+    print(f'Number of classes: {num_classes}')
 
     if args.model == 'resnet':
         from model_resnet import get_resnet_model
