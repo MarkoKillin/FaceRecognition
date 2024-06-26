@@ -3,9 +3,9 @@ import torch.nn as nn
 from torchvision import models
 
 
-class FaceRecognitionResNet(nn.Module):
+class FaceRecognitionResNet18(nn.Module):
     def __init__(self, num_classes):
-        super(FaceRecognitionResNet, self).__init__()
+        super(FaceRecognitionResNet18, self).__init__()
         self.resnet = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
         self.resnet.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
         self.resnet.fc = nn.Linear(self.resnet.fc.in_features, num_classes)
@@ -26,6 +26,5 @@ class FaceRecognitionResNet(nn.Module):
         return self.resnet(x)
 
 
-
 def get_resnet_model(num_classes):
-    return FaceRecognitionResNet(num_classes)
+    return FaceRecognitionResNet18(num_classes)

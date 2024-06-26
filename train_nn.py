@@ -33,7 +33,7 @@ def train_model(model, train_loader, val_loader, device, epochs=10, save_path='m
 
         writer.add_scalar('Loss/train', epoch_loss, epoch)
 
-        #validation
+        # validation
         model.eval()
         val_loss = 0.0
         correct = 0
@@ -60,8 +60,9 @@ def train_model(model, train_loader, val_loader, device, epochs=10, save_path='m
 
 if __name__ == '__main__':
     import argparse
+
     parser = argparse.ArgumentParser(description='Train neural network model')
-    parser.add_argument('--model', type=str, default='resnet', choices=['cnn', 'resnet'])
+    parser.add_argument('--model', type=str, default='resnet50', choices=['cnn', 'resnet18', 'resnet50'])
     parser.add_argument('--epochs', type=int, default=30, help='number of epochs')
     args = parser.parse_args()
 
@@ -81,16 +82,19 @@ if __name__ == '__main__':
     num_classes = len(classes)
     print(f'Number of classes: {num_classes}')
 
-    if args.model == 'resnet':
-        from model_resnet import get_resnet_model
+    if args.model == 'resnet18':
+        from model_resnet18 import get_resnet_model
+
         sel_model = get_resnet_model(num_classes)
-    elif args.model == 'efficientnet':
-        from model_efficientnet import get_efficientnet_model
-        sel_model = get_efficientnet_model(num_classes)
+    elif args.model == 'resnet50':
+        from model_resnet50 import get_resnet_model
+
+        sel_model = get_resnet_model(num_classes)
     else:
         from model_cnn import get_cnn_model
+
         sel_model = get_cnn_model(num_classes)
 
     sel_model.to(train_device)
-    train_model(sel_model, train_loader_1, val_loader_1, train_device, epochs=args.epochs, save_path=f'models/model_{args.model}.pth', log_path=f'runs/model_{args.model}')
-
+    train_model(sel_model, train_loader_1, val_loader_1, train_device, epochs=args.epochs,
+                save_path=f'models/model_{args.model}.pth', log_path=f'runs/model_{args.model}')
