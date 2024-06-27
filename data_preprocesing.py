@@ -1,5 +1,5 @@
 from torchvision import transforms, datasets
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 import numpy as np
 from collections import Counter
 from sklearn.datasets import fetch_lfw_people
@@ -99,14 +99,16 @@ def _prepare_ml_data(data_dir, top_classes, save_path):
         loaded_dataset = DatasetLoader(root_dir=data_dir, transform=transform)
         _filter_dataset(loaded_dataset, top_classes, save_path)
 
+    dataloader = DataLoader(loaded_dataset, batch_size=64, shuffle=False, num_workers=4)
+
     data = []
     targets = []
-    for img, label in loaded_dataset:
-        data.append(img.numpy().flatten())
-        targets.append(label)
+    for imgs, labels in dataloader:
+        data.append(imgs.view(imgs.size(0), -1).numpy())
+        targets.append(labels.numpy())
 
-    data = np.array(data)
-    targets = np.array(targets)
+    data = np.vstack(data)
+    targets = np.concatenate(targets)
     _, h, w = loaded_dataset[0][0].shape
 
     return data, targets, h, w
@@ -134,7 +136,7 @@ def _filter_dataset(dataset, top_classes, save_path):
 
 
 if __name__ == '__main__':
-    dataset, classes = prepare_nn_data_cwf()
-    print(f'Found {len(dataset)} images in {len(classes)} classes.')
-    # X, y, _, _ = prepare_ml_data_cwf()
-    # print(f'Prepared data for mlL {X.shape}, {y.shape}')
+    # dataset, classes = prepare_nn_data_cwf()
+    # print(f'Found {len(dataset)} images in {len(classes)} classes.')
+    X, y, _, _ = prepare_ml_data_cwf()
+    print(f'Prepared data for mlL {X.shape}, {y.shape}')
