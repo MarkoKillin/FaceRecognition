@@ -41,7 +41,7 @@ if __name__ == '__main__':
     X_test_pca = pca.transform(X_test)
     print('----Data Loaded----')
 
-    if args.model == 'svm':  # polinomial kernel degree 1
+    if args.model == 'svm':
         # param_grid_svm = {'C': [1e3, 1e4, 1e5], 'gamma': [0.0001, 0.001, 0.01, 0.1], }
         # model = GridSearchCV(SVC(kernel='rbf', class_weight='balanced'), param_grid=param_grid_svm)
         model = SVC(kernel='rbf', random_state=42)

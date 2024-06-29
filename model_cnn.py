@@ -3,7 +3,7 @@ import torch.nn.functional as F
 
 
 class FaceRecognitionCNN(nn.Module):
-    def __init__(self, num_classes):  # tweak numbers
+    def __init__(self, num_classes):
         super(FaceRecognitionCNN, self).__init__()
         self.conv1 = nn.Conv2d(1, 32, kernel_size=5, padding=2)
         self.bn1 = nn.BatchNorm2d(32)
