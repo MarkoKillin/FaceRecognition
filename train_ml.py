@@ -2,7 +2,7 @@ from data_preprocesing import prepare_ml_data_lfw, prepare_ml_data_cwf
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.svm import SVC
 from sklearn.naive_bayes import GaussianNB
-from sklearn.ensemble import RandomForestClassifier
+from model_zero_rule import ZeroRuleClassifier
 from torch.utils.tensorboard import SummaryWriter
 from sklearn.metrics import accuracy_score
 from sklearn.decomposition import PCA
@@ -41,13 +41,13 @@ if __name__ == '__main__':
     X_test_pca = pca.transform(X_test)
     print('----Data Loaded----')
 
-    if args.model == 'svm':
-        param_grid_svm = {'C': [1e3, 5e3, 1e4, 5e4, 1e5], 'gamma': [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.1], }
-        model = GridSearchCV(SVC(kernel='rbf', class_weight='balanced'), param_grid=param_grid_svm)
+    if args.model == 'svm':  # polinomial kernel degree 1
+        # param_grid_svm = {'C': [1e3, 1e4, 1e5], 'gamma': [0.0001, 0.001, 0.01, 0.1], }
+        # model = GridSearchCV(SVC(kernel='rbf', class_weight='balanced'), param_grid=param_grid_svm)
+        model = SVC(kernel='rbf', random_state=42)
     elif args.model == 'nb':
         model = GaussianNB()
     else:
-        from model_zero_rule import ZeroRuleClassifier
         model = ZeroRuleClassifier()
 
     train_model(model, X_train_pca, y_train, X_test_pca, y_test, save_path=f'models/model_{args.model}.pkl',
